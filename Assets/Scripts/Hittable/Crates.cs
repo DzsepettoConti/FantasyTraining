@@ -1,0 +1,30 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Crates : MonoBehaviour
+{
+    int currentHealth;
+    public int maxHealth = 10;
+
+    void Awake()
+    {
+        currentHealth = maxHealth;
+    }
+
+    public void TakeDamage(int amount)
+    {
+        currentHealth -= amount;
+
+        if (currentHealth <= 0)
+        { Death(); }
+        Debug.Log("Taken damage: "+ amount);
+    }
+
+    void Death()
+    {
+        // Death function
+        // TEMPORARY: Destroy Object
+        Destroy(gameObject);
+    }
+}
