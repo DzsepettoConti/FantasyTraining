@@ -49,6 +49,7 @@ public class testPlayerController : MonoBehaviour
         HandleMovement();
         HandleAnimation();
 
+        HandlePickUp();
         HandleAttack();
 
     }
@@ -92,7 +93,6 @@ public class testPlayerController : MonoBehaviour
     }
     private void HandleIsGrounded()
     {
-        Debug.Log("ez a távolság a földtõl "+ groundDistance);
         isCharacterGrounded = Physics.CheckSphere(transform.position, groundDistance, groundMask);
     }
     private void HandleGravity()
@@ -137,6 +137,14 @@ public class testPlayerController : MonoBehaviour
             anim.SetTrigger("attackTrigger");
         }
     }
+    private void HandlePickUp()
+    {
+        if (Input.GetKeyDown(KeyCode.E)) 
+        {
+            Debug.Log("Megnyomva a felvétel");
+            anim.SetTrigger("pickupTrigger");
+        }
+    }
     public void EnableWeaponCollider()
     {
         isAttacking = true;
@@ -148,4 +156,5 @@ public class testPlayerController : MonoBehaviour
         Debug.Log("kikapcsoltuk az isattacking statet");
         weponCollider.enabled = false;
     }
+    
 }

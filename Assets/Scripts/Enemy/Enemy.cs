@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
@@ -32,12 +34,15 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] private float health;
     [SerializeField] private bool isDead;
+    [SerializeField] private UnityEngine.UI.Slider slider;
+    [SerializeField] private Camera targetCamera;
 
     [SerializeField] testExperienceManager playerStats;
     public void TakeDamage(float damage)
     {
         health -= damage;
         Debug.Log(health);
+        slider.value = health;
         CheckHealth(health);
     }
 
@@ -45,9 +50,12 @@ public class Enemy : MonoBehaviour
     {
         GetReferences();
         isDead = false;
+        slider.maxValue = health;
+        slider.minValue = 0;
     }
     void Update()
     {
+        UpdateHealthBar();
         CanSeePlayer();
         currentState = stateMachine.activeState.ToString();
     }
@@ -77,7 +85,6 @@ public class Enemy : MonoBehaviour
                             return true;
                         }
                     }
-
                     Debug.DrawRay(ray.origin, ray.direction * sightDistance, Color.red);
                 }
             }
@@ -104,6 +111,12 @@ public class Enemy : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         stateMachine.Initialise();
         player = GameObject.FindGameObjectWithTag("Player");
+    }
+    private void UpdateHealthBar()
+    {
+        slider.value = health;
+        slider.transform.LookAt(targetCamera.transform.position);
+
     }
 
 
