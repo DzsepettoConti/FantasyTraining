@@ -11,13 +11,9 @@ public class InputManager : MonoBehaviour
     private PlayerMotor motor;
     private PlayerLook look;
     private PlayerCombat combat;
-<<<<<<< HEAD
     private PlayerUI playerUI;
 
-=======
 
-    // Start is called before the first frame update
->>>>>>> origin/main
     void Awake()
     {
         playerInput = new PlayerInput();

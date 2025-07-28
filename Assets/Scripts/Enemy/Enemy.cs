@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
     public GameObject Player { get => player; }
     public Path path;
     [Header("Sight Values")]
-    public float sightDistance = 20f;
+    public float sightDistance = 10f;
     public float fieldOfView = 85f;
     public float eyeHeight;
     [Header("Weapon Values")]
@@ -32,6 +32,8 @@ public class Enemy : MonoBehaviour
 
     [SerializeField] private float health;
     [SerializeField] private bool isDead;
+
+    [SerializeField] testExperienceManager playerStats;
     public void TakeDamage(float damage)
     {
         health -= damage;
@@ -93,6 +95,8 @@ public class Enemy : MonoBehaviour
     private void enemyDead()
     {
         Debug.Log("Meghalt az enemy");
+        Destroy(gameObject);
+        playerStats.HandleKill("Slime");
     }
     private void GetReferences()
     {

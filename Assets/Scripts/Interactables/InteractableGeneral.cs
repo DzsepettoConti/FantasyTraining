@@ -1,15 +1,14 @@
-<<<<<<< HEAD
-=======
+
 using System.Collections;
 using System.Collections.Generic;
->>>>>>> origin/main
+
 using UnityEngine;
 
 public class InteractableGeneral : Interactable
 {
     [SerializeField]
     private GameObject currentObject;
-<<<<<<< HEAD
+
     public Item inventoryItem;
     public InventoryManager inventoryManager;
 
@@ -37,24 +36,5 @@ public class InteractableGeneral : Interactable
         {
             Debug.Log("Item not added");
         }
-=======
-    // Start is called before the first frame update
-    void Awake()
-    {
-        currentObject = gameObject; // 'this' elhagyható
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    protected override void Interact()
-    {
-        
-        Debug.Log($"Felvettük a követ: {promptMessage}");
-        Destroy(gameObject);
-        
->>>>>>> origin/main
     }
 }

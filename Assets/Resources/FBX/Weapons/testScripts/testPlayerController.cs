@@ -21,6 +21,7 @@ public class testPlayerController : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
 
     [Header("Animations")]
+
     [SerializeField] private Animator anim;
 
     [Header("Other variables")]
@@ -91,7 +92,8 @@ public class testPlayerController : MonoBehaviour
     }
     private void HandleIsGrounded()
     {
-        isCharacterGrounded = Physics.CheckSphere(transform.position, groundDistance);
+        Debug.Log("ez a távolság a földtõl "+ groundDistance);
+        isCharacterGrounded = Physics.CheckSphere(transform.position, groundDistance, groundMask);
     }
     private void HandleGravity()
     {
@@ -106,8 +108,14 @@ public class testPlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && isCharacterGrounded)
         {
-            anim.SetTrigger("jumpTrigger");
-            velocity.y += Mathf.Sqrt(jumpForce * -2f * gravity);
+            if (isAttacking)
+            {
+                velocity.y += Mathf.Sqrt(jumpForce * -2f * gravity);
+            }
+            else {
+                anim.SetTrigger("jumpTrigger");
+                velocity.y += Mathf.Sqrt(jumpForce * -2f * gravity);
+            }
         }
     }
     private void GetReferences()
@@ -122,23 +130,22 @@ public class testPlayerController : MonoBehaviour
     }
     private void HandleAttack()
     {
-        if (Input.GetMouseButtonDown(0))
+        // ha attack közben ugrunk, akkor nem megy végig az animáció, és nem állitodik vissza az isattacking
+        if (Input.GetMouseButtonDown(0) && !isAttacking)
         {
-            anim.ResetTrigger("attackTrigger");
+            Debug.Log("elkezdtük a támadást");
             anim.SetTrigger("attackTrigger");
         }
     }
-    private bool IsInAttackAnimation()
-    {
-        AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
-        return stateInfo.IsName("swordAttack") && stateInfo.normalizedTime < 1f;
-    }
     public void EnableWeaponCollider()
     {
+        isAttacking = true;
         weponCollider.enabled = true;
     }
     public void DisableWeaponCollider()
     {
+        isAttacking = false;
+        Debug.Log("kikapcsoltuk az isattacking statet");
         weponCollider.enabled = false;
     }
 }

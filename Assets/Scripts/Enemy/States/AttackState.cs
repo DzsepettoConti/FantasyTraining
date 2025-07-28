@@ -11,6 +11,7 @@ public class AttackState : BaseState
     private float losePlayerTimer;
     private float attackTimer;
 
+    [SerializeField] private Coroutine meleeRoutine;
 
 
     public override void Enter()
@@ -105,31 +106,36 @@ public class AttackState : BaseState
     }
     public void meleeAttack()
     {
-// Debug.Log("Megyek megütni!");
-        enemy.agent.SetDestination(enemy.Player.transform.position);
-        enemy.StartCoroutine(FollowAndMeleeAttack());
+        if (meleeRoutine != null)
+        {
+            enemy.StopCoroutine(meleeRoutine);
+        }
+        meleeRoutine = enemy.StartCoroutine(FollowAndMeleeAttack());
     }
 
     private IEnumerator FollowAndMeleeAttack()
     {
-        while (true)
+        float distance = Vector3.Distance(enemy.transform.position, enemy.Player.transform.position);
+
+        if (distance <= 1.5f) // közelharc-távolság
         {
-            float distance = Vector3.Distance(enemy.transform.position, enemy.Player.transform.position);
-
-            if (distance <= 1.5f) // közelharc-távolság
+            PlayerHealth playerHealth = enemy.Player.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
             {
-                //Debug.Log("Melee ütés!");
-
-                PlayerHealth playerHealth = enemy.Player.GetComponent<PlayerHealth>();
-                if (playerHealth != null)
-                {
-                    playerHealth.TakeDamage(10); // ugyanúgy, mint a bullet
-                }
-                enemy.agent.isStopped = true;
-                yield break;
+                playerHealth.TakeDamage(10);
             }
-            enemy.agent.SetDestination(enemy.Player.transform.position);
-            yield return new WaitForSeconds(0.1f);
+
+            enemy.agent.isStopped = true;
+
+            yield return new WaitForSeconds(0.5f); // hogy ne támadjon minden frame-ben
+
+            enemy.agent.isStopped = false;
+            attackTimer = 0; // újraindítjuk a támadás időzítőjét
+
+            yield break;
         }
+
+        enemy.agent.SetDestination(enemy.Player.transform.position);
+        yield return new WaitForSeconds(0.1f);
     }
 }
