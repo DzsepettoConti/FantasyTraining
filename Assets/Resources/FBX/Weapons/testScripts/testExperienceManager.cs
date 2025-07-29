@@ -74,5 +74,9 @@ public class testExperienceManager : MonoBehaviour
         {
             AddExperience(10);
         }
+        if (killedTag == "Skeleton") 
+        {
+            AddExperience(5);
+        }
     }
 }

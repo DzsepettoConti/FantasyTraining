@@ -610,6 +610,7 @@ MonoBehaviour:
   health: 100
   isDead: 0
   slider: {fileID: 2564086181154938709}
+  targetCamera: {fileID: 0}
   playerStats: {fileID: 0}
 --- !u!114 &2361875609130594628
 MonoBehaviour:

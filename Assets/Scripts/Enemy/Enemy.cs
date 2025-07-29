@@ -36,6 +36,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private bool isDead;
     [SerializeField] private UnityEngine.UI.Slider slider;
     [SerializeField] private Camera targetCamera;
+     public Animator animator;
 
     [SerializeField] testExperienceManager playerStats;
     public void TakeDamage(float damage)
@@ -103,14 +104,16 @@ public class Enemy : MonoBehaviour
     {
         Debug.Log("Meghalt az enemy");
         Destroy(gameObject);
-        playerStats.HandleKill("Slime");
+        playerStats.HandleKill("Skeleton");
     }
     private void GetReferences()
     {
         stateMachine = GetComponent<StateMachine>();
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
         stateMachine.Initialise();
         player = GameObject.FindGameObjectWithTag("Player");
+
     }
     private void UpdateHealthBar()
     {

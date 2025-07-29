@@ -7,22 +7,19 @@ public class PatrolState : BaseState
     public int waypointIndex;
     public float waitTimer;
 
-    // roaminghoz
-    public float roamRadius = 5f;
-    public float roamWaitTime = 2f;
-    private float roamWaitTimer;
+    // Roaminghoz
 
-    private bool roaming = false;
+    private float idleBlendTimer = 0f;
 
     public override void Enter()
     {
         waitTimer = 0;
-        roamWaitTimer = 0;
     }
 
     public override void Perform()
     {
         PatrolCycle();
+        SetMovementAnimation();
 
         if (enemy.CanSeePlayer())
         {
@@ -40,30 +37,14 @@ public class PatrolState : BaseState
         {
             Debug.Log("nincs path ezért roamol");
 
-            if (!roaming || enemy.agent.remainingDistance < 0.2f)
-            {
-                roamWaitTimer -= Time.deltaTime;
-
-                if (roamWaitTimer <= 0f)
-                {
-                    Vector2 randomCircle = Random.insideUnitCircle * roamRadius;
-                    Vector3 roamTargetPosition = new Vector3(
-                        enemy.transform.position.x + randomCircle.x,
-                        enemy.transform.position.y,
-                        enemy.transform.position.z + randomCircle.y
-                    );
-
-                    enemy.agent.SetDestination(roamTargetPosition);
-                    roaming = true;
-                    roamWaitTimer = roamWaitTime;
-                }
-            }
+           
         }
         else
         {
             if (enemy.agent.remainingDistance < 0.2f)
             {
                 waitTimer += Time.deltaTime;
+
                 if (waitTimer > 3)
                 {
                     if (waypointIndex < enemy.path.waypoints.Count - 1)
@@ -74,9 +55,40 @@ public class PatrolState : BaseState
                     {
                         waypointIndex = 0;
                     }
+
+                    enemy.agent.isStopped = false;
                     enemy.agent.SetDestination(enemy.path.waypoints[waypointIndex].position);
                     waitTimer = 0;
                 }
+            }
+        }
+    }
+
+    private void SetMovementAnimation()
+    {
+        float currentSpeed = enemy.agent.velocity.magnitude;
+
+        if (currentSpeed >= 0.1f)
+        {
+            enemy.animator.SetFloat("moveSpeed", currentSpeed);
+            idleBlendTimer = 0f;
+
+            if (enemy.agent.isStopped)
+                enemy.agent.isStopped = false;
+        }
+        else
+        {
+            enemy.animator.SetFloat("moveSpeed", 0f);
+            idleBlendTimer += Time.deltaTime;
+
+            if (!enemy.agent.isStopped)
+                enemy.agent.isStopped = true;
+
+            if (idleBlendTimer >= 3f)
+            {
+                float idleVariation = Random.Range(0f, 1f);
+                enemy.animator.SetFloat("idleBlend", idleVariation);
+                idleBlendTimer = 0f;
             }
         }
     }
